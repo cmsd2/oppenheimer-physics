@@ -1,0 +1,40 @@
+project:
+  # A one-page website: CI publishes the HTML to GitHub Pages with the PDF
+  # beside it.
+  type: website
+  output-dir: _site
+  render:
+    - "index.qmd"
+
+website:
+  title: "The physics in Oppenheimer"
+  site-url: "https://cmsd2.github.io/oppenheimer-physics/"
+
+# Re-run code only when index.qmd changes, and keep the results in _freeze/.
+# Commit _freeze/ so a render without Python's packages still works.
+execute:
+  freeze: auto
+
+bibliography: references.bib
+link-citations: true
+
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    code-fold: true
+    code-summary: "Code"
+    include-before-body: shared/macros.html
+    css: shared/latin-modern.css
+  pdf:
+    pdf-engine: lualatex
+    documentclass: article
+    papersize: a4
+    toc: true
+    number-sections: true
+    colorlinks: true
+    include-in-header: shared/macros.tex
+    # The PDF shows results; the code is in the HTML version.
+    echo: false
+    output-file: oppenheimer-physics.pdf

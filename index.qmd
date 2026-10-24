@@ -1,0 +1,854 @@
+---
+title: "The physics in *Oppenheimer*"
+subtitle: "A literature review, scene by scene"
+date: 2026-10-24
+abstract: |
+  Christopher Nolan's *Oppenheimer* (2023) moves through about thirty years
+  of physics: molecular quantum mechanics in 1927, neutron stars and
+  gravitational collapse in 1939, fission, the bomb, and the hydrogen bomb
+  debate. This review collects what historians and physicists have written
+  about the film, then takes each piece of physics in the order the film
+  meets it. For each one it gives the paper or report where the work first
+  appeared, the key equations, and a short calculation that checks the
+  numbers.
+jupyter: python3
+---
+
+::: {.callout-note}
+Written by Claude as a reading guide. Every journal article in the
+bibliography was checked against Crossref. Scene descriptions come from
+memory of the film and from the reviews cited, so check any claim about what
+is on screen against the film itself. Calculations use textbook models and
+stated inputs; they reproduce orders of magnitude and some classic results,
+not design figures.
+:::
+
+```{python}
+#| label: setup
+#| include: false
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.constants import (G, c, e, hbar, m_n, m_e, m_p, N_A,
+                             epsilon_0, physical_constants)
+
+MeV = 1e6 * e                      # J
+u_MeV = physical_constants["atomic mass constant energy equivalent in MeV"][0]
+M_sun = 1.98892e30                 # kg
+kt = 4.184e12                      # J per kiloton of TNT
+k_C = 1 / (4 * np.pi * epsilon_0)  # Coulomb constant
+
+# Atomic masses in u (AME2020 values, rounded).
+mass = {
+    "n": 1.00866492, "He4": 4.00260325, "H2": 2.01410178, "H3": 3.01604928,
+    "N14": 14.00307400, "Mg24": 23.98504170,
+    "U235": 235.0439299, "U236": 236.0455680,
+    "U238": 238.0507882, "U239": 239.0542933,
+}
+```
+
+# How to read the film's physics
+
+The film covers three periods, and each one leaves a different paper trail.
+
+**1926 to 1939: open literature.** Everything Oppenheimer and his
+contemporaries did before the war appeared in ordinary journals:
+*Zeitschrift für Physik*, *Annalen der Physik*, *Physical Review*,
+*Nature*. These are the papers to read alongside the early scenes. The
+issue of *Physical Review* dated 1 September 1939, the day Germany invaded
+Poland, holds both Bohr and Wheeler's theory of fission
+[@bohr1939wheeler] and Oppenheimer and Snyder's paper on collapse
+[@oppenheimer1939snyder].
+
+**1940 to 1945: secrecy.** Physicists in Britain and the United States
+began holding back fission results in 1940, before any government required
+it. The system leaked at first. McMillan and Abelson published the
+discovery of neptunium in June 1940 [@mcmillan1940], and Flerov and Petrzhak
+published spontaneous fission in *Physical Review* that summer
+[@flerov1940]. By 1941 the controls held: Seaborg, McMillan, Kennedy and
+Wahl's letter on element 94 reached *Physical Review* on 28 January 1941
+and waited until 1946 [@seaborg1946]. Wartime work went into numbered
+Los Alamos reports instead: LA-1 (Serber's lectures, published as
+@serber1992) and LA-602 on atmospheric ignition [@konopinski1946].
+@wellerstein2021 tells the story of this system.
+
+**1945 onward: release in stages.** The Smyth Report [@smyth1945] was the
+first official account. The withheld papers followed in 1946
+[@seaborg1946; @kennedy1946], and the Los Alamos reports came out over
+decades. Some details of weapon design remain classified. Academics also
+worked results out from the outside: G. I. Taylor estimated the Trinity
+yield in 1950 from published photographs [@taylor1950a; @taylor1950b],
+which @sec-trinity repeats.
+
+So "the original paper" means a journal article for the scenes up to 1939,
+an internal report for the Los Alamos scenes, and often a post-war
+reconstruction for the bomb physics itself. @reed2021 rebuilds that physics
+from open sources and is the best single companion to the middle of the
+film. @hoddeson1993 is the technical history of Los Alamos.
+
+# What reviewers said {#sec-reviews}
+
+No full-length scholarly study of the film's physics has appeared. The
+closest pieces are reviews and letters.
+
+**Historians.** @whitfield2024 reviews the film for the *Journal of
+American History*. He reads it as narrowing a large scientific and
+political effort down to one man. @griffith2023 goes scene by scene for the
+*Bulletin of the Atomic Scientists* and finds the technical content mostly
+faithful. He calls the marbles-in-bowls scene invented, though it conveys
+the scale of the isotope problem. He notes that Rutherford, not Blackett,
+introduced Oppenheimer to Bohr, and that the film gives the
+atmospheric-ignition question more weight than it had in 1945.
+@politifact2023 found that the two Einstein scenes about ignition did not
+happen; Oppenheimer took the question to Arthur Compton.
+
+**Physicists.** A *Physics Today* exchange set the terms of the debate.
+@santiago2024 argue that the film celebrates Trinity as a scientific feat
+and ignores fallout and the people living downwind. @reed2024 answers that
+the film is a life of Oppenheimer, not a documentary, and that it may draw
+young viewers to the history. Reed is the author of @reed2021. The writers
+at *Physics World* [@physicsworld2023] rated the film highly; Kate Gardner
+also raised the people living near the test site. Scientists at ANSTO
+wanted more physics on screen [@ansto2023]. Kevin Pitts checked the delay
+between the Trinity flash and the sound and found it right
+[@pitts2023]. In an interview with *Science*, the historian David Cassidy
+called Oppenheimer "no Einstein" but rated the collapse work at Nobel level
+[@cho2023]. Los Alamos published its own summary of his science
+[@lanl2023].
+
+**On the physics itself.** @ortega2017 is the best paper on why the
+collapse work of 1939 went unused for two decades. It sits between history
+and physics and does not depend on the film.
+
+# Göttingen, 1927: separating electrons from nuclei
+
+The film shows Oppenheimer arriving in Göttingen to work with Max Born. Two
+papers came out of that year: his thesis on the continuous spectrum
+[@oppenheimer1927] and the paper with Born that every chemistry course
+still uses [@born1927].
+
+A molecule has electrons at positions $\mathbf r$ and nuclei at positions
+$\mathbf R$, with Hamiltonian
+$$
+H = T_N + T_e + V(\mathbf r, \mathbf R), \qquad
+T_N = -\sum_a \frac{\hbar^2}{2M_a}\nabla_a^2 .
+$$
+Nuclei are thousands of times heavier than electrons and move slowly, so
+Born and Oppenheimer first solve for the electrons with the nuclei held
+still:
+$$
+\bigl[T_e + V(\mathbf r; \mathbf R)\bigr]\,\phi_k(\mathbf r; \mathbf R)
+  = U_k(\mathbf R)\,\phi_k(\mathbf r; \mathbf R).
+$$
+The electronic energy $U_k(\mathbf R)$ then acts as the potential for the
+nuclei:
+$$
+\bigl[T_N + U_k(\mathbf R)\bigr]\,\chi(\mathbf R) = E\,\chi(\mathbf R),
+\qquad
+\Psi(\mathbf r, \mathbf R) \approx \phi_k(\mathbf r; \mathbf R)\,\chi(\mathbf R).
+$$
+Born and Oppenheimer expanded in the small parameter
+$\kappa = (m_e/M)^{1/4}$ and found the familiar ordering of molecular
+energies:
+$$
+E_{\text{electronic}} : E_{\text{vibration}} : E_{\text{rotation}}
+  \approx 1 : \kappa^2 : \kappa^4 .
+$$
+
+```{python}
+kappa = (m_e / m_p) ** 0.25
+print(f"H2: kappa = {kappa:.3f}, kappa^2 = {kappa**2:.4f}, "
+      f"kappa^4 = {kappa**4:.5f}")
+```
+
+For hydrogen, with $M = m_p$, that gives $\kappa \approx$
+`{python} f"{kappa:.2f}"`: vibrational energies a few per cent of
+electronic ones, rotational energies a few parts in ten thousand. That
+matches spectra (electronic transitions in the ultraviolet, vibrations in
+the infrared, rotations in the microwave).
+
+# Heisenberg's lecture: uncertainty
+
+The film puts Oppenheimer, with Rabi, in the audience for a Heisenberg
+lecture. The paper of that year is @heisenberg1927, which argued from
+thought experiments that position and momentum cannot both be exact,
+roughly $\delta x\,\delta p \sim h$. The inequality in its modern form,
+$$
+\sigma_x \sigma_p \ge \frac{\hbar}{2},
+$$
+with $\sigma$ the standard deviation, came from @kennard1927 soon after.
+
+# Berkeley in the 1930s
+
+The film compresses Oppenheimer's Berkeley years into a few scenes of
+teaching and of Lawrence's Radiation Laboratory. The physics behind them is
+mostly not on screen, but it explains his reputation.
+
+## Tunnelling
+
+@oppenheimer1928 includes one of the first uses of quantum tunnelling: an
+electric field $F$ can pull the electron out of a hydrogen atom even though
+classically it is bound. In the WKB approximation the probability of
+crossing a barrier is
+$$
+T \approx \exp\!\left(-\frac{2}{\hbar}\int \sqrt{2m\,[V(x) - E]}\,\mathrm dx\right),
+$$
+and for an electron bound by energy $W$ in a uniform field, the barrier
+$V - E = W - eFx$ is a triangle, giving
+$$
+T \approx \exp\!\left(-\frac{4\sqrt{2m}\,W^{3/2}}{3\hbar e F}\right).
+$$
+The same exponent governs field emission from metals (Fowler and Nordheim,
+also 1928).
+
+## The anti-electron
+
+Dirac's equation allows negative energies, $E = \pm\sqrt{p^2c^2 + m^2c^4}$.
+Dirac first suggested that the "holes" in the filled sea of negative-energy
+states were protons. @oppenheimer1930 pointed out that the electron in a
+hydrogen atom would then fall into its proton's hole, so hydrogen would
+annihilate within a tiny fraction of a second. Weyl showed in the same
+period that the theory's symmetry forces the hole to have the electron's
+mass. @dirac1931 accepted both points and predicted the anti-electron,
+which @anderson1933 found in cosmic rays.
+
+## Deuterons and the Coulomb barrier
+
+A charged particle hitting a nucleus must climb the Coulomb barrier,
+$$
+V_C = \frac{Z_1 Z_2 e^2}{4\pi\varepsilon_0\,R}, \qquad
+R \approx r_0\bigl(A_1^{1/3} + A_2^{1/3}\bigr),\quad r_0 \approx 1.2~\text{fm}.
+$$
+@oppenheimer1935 explained why deuterons react with heavy nuclei at
+energies below this barrier. The deuteron is large and loosely bound
+(2.2 MeV). The nucleus repels its proton, which leaves the neutron in front
+to be captured while the proton flies off. This (d, p) reaction is the
+Oppenheimer–Phillips process.
+
+## Lawrence's cyclotron
+
+A charge $q$ in a field $B$ circles at the cyclotron frequency, which does
+not depend on its speed:
+$$
+\omega_c = \frac{qB}{m}, \qquad K_{\max} = \frac{q^2 B^2 R^2}{2m},
+$$
+so a fixed-frequency oscillator can kick it twice per turn as it spirals
+out to the magnet's radius $R$ [@lawrence1932]. The same magnets later
+became the calutrons of @sec-materials.
+
+# Stars, 1938–1939: neutron cores and collapse {#sec-stars}
+
+The film gives one scene to this work: Oppenheimer and Hartland Snyder
+talking through what happens when a star exhausts its fuel. It is the work
+modern physicists rate highest [@cho2023; @ortega2017].
+
+## The sequence of papers
+
+@landau1938 proposed that stars might have neutron cores.
+@oppenheimer1938 showed that such cores are unstable unless they are large.
+@tolman1939 and @oppenheimer1939volkoff, back to back in *Physical Review*,
+set up the general-relativistic equations of stellar structure and found a
+maximum mass for a star held up by neutron degeneracy pressure.
+@oppenheimer1939snyder then asked what happens above it.
+
+## The Tolman–Oppenheimer–Volkoff equation
+
+For a static, spherically symmetric star with pressure $P(r)$, mass-energy
+density $\varepsilon(r)$ and enclosed mass $m(r)$, general relativity
+replaces Newtonian hydrostatic equilibrium with
+$$
+\frac{\mathrm dP}{\mathrm dr} =
+ -\frac{G\,\bigl(\varepsilon/c^2 + P/c^2\bigr)\bigl(m + 4\pi r^3 P/c^2\bigr)}
+       {r^2\bigl(1 - 2Gm/rc^2\bigr)},
+\qquad
+\frac{\mathrm dm}{\mathrm dr} = \frac{4\pi r^2 \varepsilon}{c^2}.
+$$
+Each of the three corrections to Newton makes gravity stronger: pressure
+gravitates, it adds to the enclosed mass, and the metric factor diverges
+as $r \to 2Gm/c^2$. Oppenheimer and Volkoff closed the system with the
+equation of state of a cold ideal Fermi gas of neutrons. With
+$x = p_F/m_n c$,
+$$
+\varepsilon = \frac{m_n^4 c^5}{8\pi^2\hbar^3}
+  \Bigl[x(2x^2+1)\sqrt{1+x^2} - \sinh^{-1}x\Bigr],\qquad
+P = \frac{m_n^4 c^5}{24\pi^2\hbar^3}
+  \Bigl[x(2x^2-3)\sqrt{1+x^2} + 3\sinh^{-1}x\Bigr].
+$$
+
+```{python}
+#| label: fig-tov
+#| fig-cap: "Mass against radius for stars of free neutrons, from integrating the TOV equation outward from the centre for a range of central densities. The maximum is the Oppenheimer–Volkoff limit."
+from scipy.integrate import solve_ivp
+
+K = m_n**4 * c**5 / (np.pi**2 * hbar**3)
+
+# The exact forms cancel badly for small x, so below x = 0.01 use their
+# leading terms: rest mass for eps, the non-relativistic gas for P.
+def eps_of_x(x):
+    exact = x * (2 * x**2 + 1) * np.sqrt(1 + x**2) - np.arcsinh(x)
+    return K / 8 * np.where(x < 0.01, 8 / 3 * x**3, exact)
+
+def P_of_x(x):
+    exact = x * (2 * x**2 - 3) * np.sqrt(1 + x**2) + 3 * np.arcsinh(x)
+    return K / 24 * np.where(x < 0.01, 8 / 5 * x**5, exact)
+
+# Tabulate the equation of state once and interpolate eps(P) in log P.
+x_tab = np.logspace(-4, 2, 4000)
+logP_tab, eps_tab = np.log(P_of_x(x_tab)), eps_of_x(x_tab)
+
+def tov(r, y):
+    P, m = y
+    if P <= 0:
+        return [0.0, 0.0]
+    eps = np.interp(np.log(P), logP_tab, eps_tab)
+    dP = (-G * (eps + P) / c**2 * (m + 4 * np.pi * r**3 * P / c**2)
+          / (r**2 * (1 - 2 * G * m / (r * c**2))))
+    return [dP, 4 * np.pi * r**2 * eps / c**2]
+
+def star(x_c):
+    """Radius (m) and gravitational mass (kg) for central Fermi momentum x_c."""
+    P_c, r0 = P_of_x(x_c), 1.0
+    surface = lambda r, y: y[0] - 1e-10 * P_c
+    surface.terminal = True
+    sol = solve_ivp(tov, [r0, 1e6], [P_c, 4 / 3 * np.pi * r0**3
+                                      * eps_of_x(x_c) / c**2],
+                    events=surface, rtol=1e-8, max_step=200,
+                    atol=[1e-14 * P_c, 1e10])
+    return sol.t[-1], sol.y[1, -1]
+
+x_c = np.logspace(-0.7, 1.3, 60)
+R_star, M_star = np.array([star(x) for x in x_c]).T
+i_max = np.argmax(M_star)
+M_OV, R_OV = M_star[i_max] / M_sun, R_star[i_max] / 1e3
+
+fig, ax = plt.subplots(figsize=(5, 3.2))
+ax.plot(R_star / 1e3, M_star / M_sun)
+ax.plot(R_OV, M_OV, "o")
+ax.annotate(f"{M_OV:.2f} $M_\\odot$ at {R_OV:.1f} km", (R_OV, M_OV),
+            xytext=(12, -4), textcoords="offset points")
+ax.set_xlabel("radius (km)")
+ax.set_ylabel(r"mass ($M_\odot$)")
+ax.set_xlim(0, 40)
+plt.show()
+```
+
+The maximum in @fig-tov is a gravitational mass of
+`{python} f"{M_OV:.2f}"` $M_\odot$ at a radius of
+`{python} f"{R_OV:.1f}"` km. @landau1980stat [§109] quote
+$0.76\,M_\odot$ at 9.4 km for the same model. Their figure is the rest mass
+$N m_n$ of the neutrons, which exceeds the gravitational mass by the
+binding energy. Observed neutron stars reach about two solar masses,
+because nuclear forces stiffen the equation of state well beyond a free
+Fermi gas. The qualitative result stands: above some mass, no cold star can
+support itself.
+
+## Oppenheimer–Snyder collapse
+
+@oppenheimer1939snyder took the simplest case, a uniform ball of
+pressureless dust starting from rest, and solved Einstein's equations
+exactly. Outside the ball the metric is Schwarzschild's, with gravitational
+radius $r_g = 2GM/c^2$. Two results matter.
+
+For an observer riding on the surface, the collapse takes a finite proper
+time, the same as Newtonian free fall from rest at radius $R_0$:
+$$
+\tau = \frac{\pi}{2}\sqrt{\frac{R_0^3}{2GM}}.
+$$
+
+```{python}
+R_sun = 6.957e8
+tau_sun = np.pi / 2 * np.sqrt(R_sun**3 / (2 * G * M_sun))
+r_g_sun = 2 * G * M_sun / c**2
+print(f"tau = {tau_sun:.0f} s, r_g = {r_g_sun/1e3:.2f} km")
+```
+
+A ball with the Sun's mass and radius would collapse in about
+`{python} f"{tau_sun/60:.0f}"` minutes of its own time, through a
+gravitational radius of `{python} f"{r_g_sun/1e3:.1f}"` km.
+
+For a distant observer, the surface never quite reaches $r_g$. A radially
+falling surface obeys, in Schwarzschild time $t$,
+$\mathrm dr/\mathrm dt \to -c\,(1 - r_g/r)$ as $r \to r_g$, so
+$$
+r - r_g \propto \exp(-ct/r_g).
+$$
+The approach takes a time of order $r_g/c$, tens of microseconds for a
+solar mass, after which light from the surface is redshifted beyond
+detection. Oppenheimer and Snyder put it as the star tending "to close
+itself off from any communication with a distant observer". Landau and
+Lifshitz work through the same solution in modern coordinates
+[@landau1975fields, §§102–103].
+
+## Why nobody followed it up
+
+The paper describes what Wheeler named a black hole in 1967. The
+@ortega2017 paper asks why it sat unused for two decades. One reason is
+on screen in the film's Einstein scenes, though the film does not make the
+link: in October 1939 @einstein1939 published a model of a cluster of
+particles in circular orbits and concluded that Schwarzschild
+singularities "do not exist in physical reality". Oppenheimer himself never
+returned to the subject. Freeman Dyson called the collapse paper his one
+revolutionary contribution to science [@cho2023].
+
+# January 1939: fission {#sec-fission}
+
+The film shows Luis Alvarez reading about fission in a barber's chair,
+rushing to tell Oppenheimer, and the oscilloscope that showed the
+ionisation pulses of fission fragments. Oppenheimer first says it can't
+happen, then works out on the blackboard that it releases neutrons, and
+those neutrons could make a bomb.
+
+## The discovery
+
+@hahn1939 found barium among the products of uranium bombarded with
+neutrons. @meitner1939 explained it with Bohr's liquid-drop model: the
+nucleus stretches and splits, and the two charged fragments fly apart.
+@frisch1939 then saw the fragments' ionisation pulses directly, the
+experiment Alvarez repeated at Berkeley.
+
+## How much energy
+
+Meitner and Frisch estimated the energy two ways. The mass of a uranium
+nucleus exceeds that of the two fragments by about a fifth of a proton
+mass, about 200 MeV. Alternatively, two fragments of charge $Ze/2$
+touching each other carry Coulomb energy
+$$
+E \approx \frac{(Z/2)^2 e^2}{4\pi\varepsilon_0 \cdot 2R_f},\qquad
+R_f = r_0 (A/2)^{1/3}.
+$$
+
+```{python}
+Z, A, r0 = 92, 236, 1.2e-15
+R_f = r0 * (A / 2) ** (1 / 3)
+E_touch = k_C * (Z / 2) ** 2 * e**2 / (2 * R_f) / MeV
+print(f"two touching fragments: {E_touch:.0f} MeV")
+```
+
+This gives `{python} f"{E_touch:.0f}"` MeV, an overestimate because real
+fragments are deformed and unequal, but the right size. A chemical
+reaction releases a few eV per molecule, so fission is about $10^8$ times
+more energetic per event.
+
+## The liquid-drop barrier
+
+@bohr1939wheeler made the model quantitative. In the semi-empirical mass
+formula the surface energy is $E_S = a_s A^{2/3}$ and the Coulomb energy
+is $E_C = a_c Z^2/A^{1/3}$. Stretch the sphere into a slight spheroid with
+deformation $\alpha_2$; to second order
+$$
+E_S(\alpha_2) = E_S\Bigl(1 + \tfrac{2}{5}\alpha_2^2\Bigr),\qquad
+E_C(\alpha_2) = E_C\Bigl(1 - \tfrac{1}{5}\alpha_2^2\Bigr).
+$$
+The surface resists deformation and the charge favours it. The sphere
+becomes unstable when $E_C > 2E_S$, which defines the fissility
+$$
+x = \frac{E_C}{2E_S} = \frac{a_c}{2a_s}\,\frac{Z^2}{A}.
+$$
+
+```{python}
+a_s, a_c = 17.8, 0.711   # MeV, one standard fit of the mass formula
+Z2A_crit = 2 * a_s / a_c
+x_U235 = 92**2 / 235 / Z2A_crit
+print(f"(Z^2/A)_crit = {Z2A_crit:.1f}, U-235: Z^2/A = {92**2/235:.1f}, "
+      f"x = {x_U235:.2f}")
+```
+
+The critical value of $Z^2/A$ is about `{python} f"{Z2A_crit:.0f}"`.
+Uranium has $Z^2/A \approx 36$ and $x \approx$ `{python} f"{x_U235:.2f}"`,
+so it sits behind a barrier of a few MeV. A neutron has to bring in enough
+energy to get over it.
+
+## Why only uranium-235
+
+@bohr1939resonance argued that slow neutrons split the rare isotope
+uranium-235, not the common uranium-238. The reason is pairing: nuclei with
+even numbers of neutrons are more tightly bound. A neutron joining
+uranium-235 makes even–even uranium-236 and releases its full binding
+energy. A neutron joining uranium-238 makes odd uranium-239 and releases
+less. The neutron separation energy is
+$S_n(A{+}1) = [M(A) + m_n - M(A{+}1)]\,c^2$.
+
+```{python}
+S_n_236 = (mass["U235"] + mass["n"] - mass["U236"]) * u_MeV
+S_n_239 = (mass["U238"] + mass["n"] - mass["U239"]) * u_MeV
+print(f"S_n(U-236) = {S_n_236:.2f} MeV, S_n(U-239) = {S_n_239:.2f} MeV")
+```
+
+Capture by uranium-235 brings `{python} f"{S_n_236:.1f}"` MeV, above the
+fission barrier of about 6 MeV, so even a neutron at rest causes fission.
+Capture by uranium-238 brings only `{python} f"{S_n_239:.1f}"` MeV, so the
+neutron itself needs about a MeV of kinetic energy. Uranium-238 is 99.3%
+of natural uranium, and this is why the film's Bohr tells Oppenheimer the
+whole country would have to become a factory.
+
+## Secondary neutrons
+
+The blackboard step in the film, from fission to a bomb, needs fission to
+release more neutrons than it absorbs. Three groups measured this within
+weeks in spring 1939 [@halban1939; @anderson1939; @szilard1939] and found
+two to three per fission.
+
+# Chain reactions and critical mass {#sec-critical}
+
+## Growth
+
+If each fission produces $\nu$ neutrons and each neutron causes another
+fission after a generation time $\tau$, the number of neutrons grows as
+$$
+N(t) = N_0 \exp\!\left(\frac{(\nu - 1)\,t}{\tau}\right) \quad\text{or, per
+generation,}\quad N_g = N_0\,\nu^{g}.
+$$
+For fast neutrons, $\tau$ is the mean free path for fission divided by the
+neutron speed.
+
+```{python}
+rho_U = 18.71                          # g/cm^3, U-235 metal
+n_U = rho_U / 235.04 * N_A             # nuclei per cm^3
+sigma_f, sigma_el, nu = 1.235e-24, 4.566e-24, 2.637  # cm^2, 2 MeV neutrons
+lam_f = 1 / (n_U * sigma_f)            # cm
+lam_t = 1 / (n_U * (sigma_f + sigma_el))
+v_n = np.sqrt(2 * 2 * MeV / m_n)       # m/s, 2 MeV neutron
+tau_gen = lam_f / 100 / v_n            # s
+
+nuclei_per_kg = 1000 / 235.04 * N_A
+E_per_kg = nuclei_per_kg * 200 * MeV
+gens = np.log(nuclei_per_kg) / np.log(nu)
+print(f"lambda_f = {lam_f:.1f} cm, tau = {tau_gen*1e9:.1f} ns")
+print(f"1 kg U-235: {E_per_kg:.2e} J = {E_per_kg/kt:.0f} kt; "
+      f"{gens:.0f} generations = {gens*tau_gen*1e6:.2f} us")
+```
+
+With the cross-sections @reed2021 uses for 2 MeV neutrons, a neutron
+travels about `{python} f"{lam_f:.0f}"` cm between fissions, which takes
+`{python} f"{tau_gen*1e9:.0f}"` ns. Fissioning one kilogram of uranium-235
+releases `{python} f"{E_per_kg/1e12:.0f}"` TJ, about
+`{python} f"{E_per_kg/kt:.0f}"` kilotons of TNT, and takes about
+`{python} f"{gens:.0f}"` generations from one neutron: half a microsecond.
+The bomb has to hold together for that long. Little Boy fissioned only
+about one kilogram of its 64 kg of uranium.
+
+## Critical size
+
+Neutrons also leak out of the surface. In a sphere, production goes as the
+volume and leakage as the surface, so there is a critical radius. Treat
+the neutrons as diffusing with $D = \lambda_t v/3$:
+$$
+\frac{\partial n}{\partial t} = D\nabla^2 n + \frac{\nu - 1}{\tau}\,n .
+$$
+Separating variables, $n = \mathrm e^{\alpha t}\sin(kr)/r$ with
+$\alpha = (\nu-1)/\tau - Dk^2$. The sphere is critical when $\alpha = 0$.
+If the density vanishes at the surface, $kR = \pi$ and
+$$
+R_c = \pi\sqrt{\frac{\lambda_t\lambda_f}{3(\nu - 1)}}.
+$$
+A better boundary condition lets neutrons escape freely, so the density
+falls to zero a distance beyond the surface. @reed2021 uses
+$n + \tfrac{2}{3}\lambda_t\,\mathrm dn/\mathrm dr = 0$ at $r = R$.
+
+```{python}
+from scipy.optimize import brentq
+
+k_c = np.sqrt(3 * (nu - 1) / (lam_t * lam_f))
+R_naive = np.pi / k_c
+bc = lambda R: (np.sin(k_c * R) / R + 2 / 3 * lam_t
+                * (k_c * np.cos(k_c * R) / R - np.sin(k_c * R) / R**2))
+R_crit = brentq(bc, 1, R_naive - 1e-9)
+mass_kg = lambda R: 4 / 3 * np.pi * R**3 * rho_U / 1000
+print(f"n = 0 at surface: R = {R_naive:.2f} cm, M = {mass_kg(R_naive):.0f} kg")
+print(f"escape condition: R = {R_crit:.2f} cm, M = {mass_kg(R_crit):.1f} kg")
+```
+
+The crude boundary gives `{python} f"{R_naive:.1f}"` cm and
+`{python} f"{mass_kg(R_naive):.0f}"` kg. The escape condition gives
+`{python} f"{R_crit:.2f}"` cm and `{python} f"{mass_kg(R_crit):.0f}"` kg,
+Reed's result, close to the measured bare critical mass of highly enriched
+uranium. @zorich2015 [§5.6.3] builds a one-equation version of the same
+balance between production and leakage as an exercise in differential
+equations, and quotes 8.5 cm and about 50 kg.
+
+## Kilograms, not tons
+
+Before 1940 most physicists assumed a bomb would need tons of uranium,
+because they thought of slow-neutron chains in natural uranium. The
+@frisch1940 memorandum asked about fast neutrons in pure uranium-235 and
+got an answer of the order of a kilogram. Their cross-section was too
+large and the answer far too small, but it moved the problem from
+impossible to industrial, and it started the British and then the American
+projects. @serber1992 is the version the new arrivals at Los Alamos heard
+in April 1943. It adds the tamper, a heavy shell that reflects neutrons
+back and holds the core together a little longer, and the efficiency
+problem: the core blows itself apart after a few generations at most.
+
+# Making the material: the marbles {#sec-materials}
+
+The scene where Oppenheimer drops marbles into bowls, one for each month's
+output of fissile material, is invented [@griffith2023], but the arithmetic
+behind it is real. Natural uranium is 0.72% uranium-235. A bomb needs
+something like 80 to 90%.
+
+## Gaseous diffusion
+
+Uranium hexafluoride molecules with the two isotopes have masses 349 and
+352. At the same temperature, lighter molecules move faster and pass
+through a porous barrier slightly more often. Graham's law gives the ideal
+separation factor per barrier:
+$$
+\alpha = \sqrt{\frac{352}{349}}.
+$$
+
+```{python}
+alpha = np.sqrt(352 / 349)
+x_f, x_p = 0.0072, 0.90
+ratio = np.log((x_p / (1 - x_p)) / (x_f / (1 - x_f)))
+stages = ratio / np.log(np.sqrt(alpha))
+print(f"alpha = {alpha:.5f}; stages at sqrt(alpha) each: {stages:.0f}")
+```
+
+That is $\alpha =$ `{python} f"{alpha:.4f}"`, a change of 0.4% per pass. In
+an ideal cascade each stage raises the abundance ratio $x/(1-x)$ by about
+$\sqrt\alpha$, so going from 0.72% to 90% takes about
+`{python} f"{round(stages, -2):,.0f}"` stages. That is why the K-25 plant at Oak Ridge
+was one of the largest buildings in the world.
+
+## Calutrons
+
+Lawrence's alternative was a mass spectrometer on an industrial scale. An
+ion of charge $q$ accelerated through voltage $V$ moves on a circle of
+radius
+$$
+r = \frac{1}{B}\sqrt{\frac{2mV}{q}}, \qquad
+\frac{\Delta r}{r} = \frac{\Delta m}{2m} = \frac{3}{2 \times 238} \approx 0.6\%.
+$$
+After half a turn the two beams land $2\,\Delta r$ apart: about 1.5 cm for
+a radius of about 1.2 m. Space charge and beam spread made it far harder
+than this suggests.
+
+## Plutonium
+
+The other route makes a new fissile element in a reactor:
+$$
+{}^{238}\mathrm U + n \to {}^{239}\mathrm U
+\xrightarrow{\beta^-,\ 23.5\ \text{min}} {}^{239}\mathrm{Np}
+\xrightarrow{\beta^-,\ 2.36\ \text{d}} {}^{239}\mathrm{Pu}.
+$$
+@mcmillan1940 published the first step in open literature. The discovery
+of plutonium [@seaborg1946] and its fissility [@kennedy1946] were held back
+until 1946.
+
+## Fermi's pile
+
+Chicago Pile-1 went critical on 2 December 1942; the film mentions it only
+in passing. A reactor can be controlled at all because about 0.65% of the
+neutrons from uranium-235 fission come out seconds later, from decaying
+fission fragments. With a small excess reactivity $k - 1$, the power grows
+with period
+$$
+T \approx \frac{\ell_{\text{eff}}}{k - 1},
+$$
+where $\ell_{\text{eff}}$ is the mean neutron lifetime including the delayed
+ones, about a tenth of a second. Prompt neutrons alone, with lifetimes of a
+millisecond in graphite, would give periods too short for any control rod.
+
+# Igniting the atmosphere {#sec-ignition}
+
+The film's tensest physics is Teller's worry that the bomb's heat could
+start a self-sustaining fusion reaction in the air, and Oppenheimer's
+"near zero". The analysis that settled it is @konopinski1946, written up
+in 1946 from wartime work. The reaction they feared most was
+$$
+{}^{14}\mathrm N + {}^{14}\mathrm N \to {}^{24}\mathrm{Mg} + {}^4\mathrm{He}.
+$$
+
+```{python}
+Q_NN = (2 * mass["N14"] - mass["Mg24"] - mass["He4"]) * u_MeV
+R_NN = 1.2e-15 * 2 * 14 ** (1 / 3)
+V_NN = k_C * 7 * 7 * e**2 / R_NN / MeV
+print(f"Q = {Q_NN:.1f} MeV, Coulomb barrier = {V_NN:.0f} MeV")
+```
+
+The reaction releases `{python} f"{Q_NN:.1f}"` MeV, but two nitrogen nuclei
+must climb a Coulomb barrier of about `{python} f"{V_NN:.0f}"` MeV, so the
+rate at any plausible temperature depends on tunnelling deep under it. The
+argument in LA-602 compares rates. At temperature $T$ the reaction heats
+the air at a rate set by the tunnelling probability, and the air cools by
+radiation and by Compton scattering of its electrons on the radiation. A
+reaction spreads only if
+$$
+\frac{\mathrm d E_{\text{fusion}}}{\mathrm dt} >
+\frac{\mathrm d E_{\text{radiation}}}{\mathrm dt}
+$$
+everywhere along the front. They found the losses ahead at every
+temperature, by a margin that survived pessimistic choices of every
+cross-section.
+
+The history is thinner than the film suggests. Teller raised the idea at
+Oppenheimer's Berkeley summer study in 1942 and Bethe dismissed it within
+days [@rhodes1986; @griffith2023]. Oppenheimer discussed it with Compton,
+not Einstein [@politifact2023].
+
+# Plutonium and implosion
+
+## Why the gun fails for plutonium
+
+Reactor plutonium contains some plutonium-240, which fissions
+spontaneously and emits neutrons. A gun brings two subcritical pieces
+together at a few hundred metres per second, so assembly takes a fraction
+of a millisecond. A stray neutron in that window starts the chain early,
+in a barely critical configuration, and the bomb fizzles.
+
+```{python}
+core_g, f_240, sf_rate = 6200, 0.01, 1000   # g, mass fraction, n/(g s)
+t_assemble = 0.1 / 300                      # s: 10 cm at 300 m/s
+n_source = core_g * f_240 * sf_rate
+print(f"{n_source:.0f} neutrons/s, {n_source * t_assemble:.0f} "
+      f"during assembly")
+```
+
+With illustrative values (a 6.2 kg core, 1% plutonium-240 emitting about
+1000 neutrons per gram per second, 10 cm closed at 300 m/s), about
+`{python} f"{n_source * t_assemble:.0f}"` neutrons appear during assembly.
+Predetonation is close to certain. Segrè's measurements of reactor
+plutonium in 1944 showed this, and Los Alamos dropped the plutonium gun
+[@hoddeson1993].
+
+## Implosion
+
+Implosion assembles the core in microseconds by crushing it. Compression
+also lowers the critical mass. Both mean free paths scale as $1/\rho$, so
+$R_c \propto 1/\rho$ and
+$$
+M_c = \tfrac{4}{3}\pi R_c^3 \rho \propto \frac{1}{\rho^2}.
+$$
+Doubling the density cuts the critical mass by four. The film credits Seth
+Neddermeyer with the idea. Making it work needed explosive lenses to shape
+a converging spherical shock, the problem George Kistiakowsky's division
+solved; @hoddeson1993 is the detailed account.
+
+# Trinity {#sec-trinity}
+
+## The delay
+
+The film's sound arrives well after the flash, which several reviewers
+checked [@pitts2023; @griffith2023]. Sound in air travels at about
+343 m/s:
+
+```{python}
+for miles in (6, 10):
+    print(f"{miles} miles: {miles * 1609.34 / 343:.0f} s")
+```
+
+## Fermi's paper strips
+
+Fermi dropped scraps of paper as the blast wave passed base camp, about
+16 km away, measured how far it moved them, and estimated the yield on the
+spot. His memorandum records a displacement of about 2.5 m and an estimate
+of about ten kilotons [@fermi1945].
+
+## Taylor's dimensional analysis
+
+In 1950 G. I. Taylor published the theory of a point explosion in air
+[@taylor1950a] and applied it to photographs of the Trinity fireball that
+had been released in 1947 [@taylor1950b]. If a large energy $E$ is
+released at a point in gas of density $\rho_0$, at early times the shock
+radius can depend only on $E$, $\rho_0$ and $t$. The only combination with
+the dimension of length is
+$$
+R(t) = S(\gamma)\left(\frac{E\,t^2}{\rho_0}\right)^{1/5},
+$$
+where Taylor found $S \approx 1.03$ for air with $\gamma = 1.4$. Plotting
+$\log R$ against $\log t$ should give a line of slope $2/5$, and its
+intercept gives $E$.
+
+```{python}
+#| label: fig-taylor
+#| fig-cap: "Radius of the Trinity shock front against time, from the photographs in Taylor (1950b), with the fitted line of slope 2/5."
+trinity = np.array([  # t (ms), R (m), from Taylor (1950b)
+    [0.10, 11.1], [0.24, 19.9], [0.38, 25.4], [0.52, 28.8], [0.66, 31.9],
+    [0.80, 34.2], [0.94, 36.3], [1.08, 38.9], [1.22, 41.0], [1.36, 42.8],
+    [1.50, 44.4], [1.65, 46.0], [1.79, 46.9], [1.93, 48.7], [3.26, 59.0],
+    [3.53, 61.1], [3.80, 62.9], [4.07, 64.3], [4.34, 65.6], [4.61, 67.3],
+    [15.0, 106.5], [25.0, 130.0], [34.0, 145.0], [53.0, 175.0],
+    [62.0, 185.0]])
+t_s, R_m = trinity[:, 0] / 1e3, trinity[:, 1]
+slope, _ = np.polyfit(np.log(t_s), np.log(R_m), 1)
+log_c = np.mean(np.log(R_m) - 0.4 * np.log(t_s))   # fix the slope at 2/5
+rho_air, S_gamma = 1.25, 1.033
+E_taylor = rho_air * np.exp(5 * log_c) / S_gamma**5
+
+fig, ax = plt.subplots(figsize=(5, 3.2))
+ax.loglog(t_s * 1e3, R_m, "o", ms=4, label="Taylor's data")
+tt = np.logspace(-4.1, -1.1, 50)
+ax.loglog(tt * 1e3, np.exp(log_c) * tt**0.4, label="slope 2/5")
+ax.set_xlabel("t (ms)")
+ax.set_ylabel("R (m)")
+ax.legend()
+plt.show()
+```
+
+The free fit has slope `{python} f"{slope:.3f}"`, close to 0.4. With the
+slope fixed at 2/5, $\rho_0 = 1.25$ kg/m³ and $S = 1.033$, the energy is
+`{python} f"{E_taylor/1e12:.0f}"` TJ, about `{python} f"{E_taylor/kt:.0f}"`
+kilotons. Taylor's own figure was close to this. The yield was still
+secret when he published, and the official figure today is about 21
+kilotons. Rabi's guess of 18 kilotons, which won the film's betting pool,
+was closer than either estimate.
+
+# The Super
+
+The last act turns on the hydrogen bomb. The reaction that matters is
+deuterium–tritium fusion:
+$$
+{}^2\mathrm H + {}^3\mathrm H \to {}^4\mathrm{He} + n.
+$$
+
+```{python}
+Q_DT = (mass["H2"] + mass["H3"] - mass["He4"] - mass["n"]) * u_MeV
+print(f"Q = {Q_DT:.1f} MeV")
+```
+
+It releases `{python} f"{Q_DT:.1f}"` MeV, and the Coulomb barrier between
+two charges of one is low enough for it to run at temperatures a fission
+bomb can reach. Teller's wartime design, the "classical Super", tried to
+start a burning wave in a cylinder of deuterium with a fission trigger.
+Calculations in 1950 showed the wave would die out. The Teller–Ulam idea
+of 1951 used radiation from the fission stage to compress the fusion fuel
+first, the same lesson as implosion at a different scale. This is where
+the open literature stops: the reports remain partly classified, and the
+film keeps this part of the story to politics. The General Advisory
+Committee report of October 1949, which Oppenheimer
+chaired and which opposed a crash programme, is the document behind the
+security hearing scenes; @bird2005 and @wellerstein2021 cover it.
+
+# Scene index
+
+| Scene | Physics | Sources |
+|---|---|---|
+| Göttingen with Born | Molecules: separating electron and nuclear motion | @born1927; @oppenheimer1927 |
+| Heisenberg lecturing | Uncertainty | @heisenberg1927; @kennard1927 |
+| Teaching at Berkeley | Tunnelling, the anti-electron, deuteron reactions | @oppenheimer1928; @oppenheimer1930; @oppenheimer1935 |
+| Lawrence's Radiation Laboratory | Cyclotron, later calutrons | @lawrence1932 |
+| Snyder and the collapsing star | Neutron-star limit, gravitational collapse | @oppenheimer1939volkoff; @oppenheimer1939snyder; @ortega2017 |
+| Einstein at Princeton | Einstein's rejection of collapse | @einstein1939 |
+| Alvarez in the barber's chair, the oscilloscope | Fission | @hahn1939; @meitner1939; @frisch1939 |
+| Bohr on turning the country into a factory | Uranium-235 only | @bohr1939resonance; @bohr1939wheeler |
+| Recruiting for Los Alamos, first lectures | Critical mass, tamper, efficiency | @frisch1940; @serber1992; @reed2021 |
+| The marbles in bowls | Isotope separation, plutonium production | @smyth1945; @reed2021 |
+| Teller's ignition calculation, "near zero" | Nitrogen fusion versus radiation losses | @konopinski1946 |
+| Neddermeyer and implosion | Predetonation, $M_c \propto \rho^{-2}$ | @hoddeson1993 |
+| Trinity: delay, betting pool | Blast scaling, yield | @fermi1945; @taylor1950b |
+| The Super and the hearing | D–T fusion, secrecy | @wellerstein2021; @bird2005 |
+
+# Reading list
+
+For the film itself, @griffith2023 and @whitfield2024. For the life,
+@bird2005, which the film adapts. For the history of the project,
+@rhodes1986. For the physics of the bomb, @reed2021, with @serber1992 as
+the primary source and @hoddeson1993 for what Los Alamos actually did. For
+secrecy and what it did to the literature, @wellerstein2021. For the
+astrophysics, @oppenheimer1939snyder is five pages and readable today,
+@ortega2017 explains its neglect, and @landau1975fields [§§102–103] and
+@landau1980stat [§109] give the textbook treatment.
+
+# References {.unnumbered}
+
+::: {#refs}
+:::

@@ -1,0 +1,19 @@
+[project]
+name = "oppenheimer-physics"
+version = "0"
+description = "Literature review: the physics in Nolan's Oppenheimer, scene by scene"
+requires-python = ">=3.12"
+dependencies = [
+    # What Quarto needs to run Python cells.
+    "ipykernel",
+    "nbclient",
+    "nbformat",
+    "pyyaml",
+    # For the calculations in the review.
+    "matplotlib",
+    "numpy",
+    "scipy",
+]
+
+[tool.uv]
+package = false

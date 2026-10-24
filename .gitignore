@@ -1,0 +1,13 @@
+# Quarto
+/_site/
+/.quarto/
+**/*.quarto_ipynb
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+# Editors (keep the shared extension recommendations)
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
