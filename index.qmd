@@ -16,7 +16,8 @@ jupyter: python3
 
 ::: {.callout-note}
 Written by Claude as a reading guide. Every journal article in the
-bibliography was checked against Crossref. Scene descriptions come from
+bibliography was checked against Crossref, and every textbook section
+number against the book. Scene descriptions come from
 memory of the film and from the reviews cited, so check any claim about what
 is on screen against the film itself. Calculations use textbook models and
 stated inputs; they reproduce orders of magnitude and some classic results,
@@ -166,6 +167,8 @@ electronic ones, rotational energies a few parts in ten thousand. That
 matches spectra (electronic transitions in the ultraviolet, vibrations in
 the infrared, rotations in the microwave).
 
+*Textbooks:* @landau1977qm [§78], @tong2017topics [§2.3.6], and @shankar1994 [§21.1, under "The Berry Phase"], which derives the separation from the path integral.
+
 # Heisenberg's lecture: uncertainty
 
 The film puts Oppenheimer, with Rabi, in the audience for a Heisenberg
@@ -176,6 +179,8 @@ $$
 \sigma_x \sigma_p \ge \frac{\hbar}{2},
 $$
 with $\sigma$ the standard deviation, came from @kennard1927 soon after.
+
+*Textbooks:* @landau1977qm [§16], @tongqm [§3.4.1] and @shankar1994 [ch. 9].
 
 # Berkeley in the 1930s
 
@@ -200,6 +205,8 @@ $$
 The same exponent governs field emission from metals (Fowler and Nordheim,
 also 1928).
 
+*Textbooks:* barrier penetration is in @landau1977qm [§50], and the ionisation of hydrogen by an electric field, the problem Oppenheimer tackled, is worked in @landau1977qm [§77, Problem 1]. @tong2017topics [§§2.2.5, 4.1] and @shankar1994 [§16.2] cover the same ground.
+
 ## The anti-electron
 
 Dirac's equation allows negative energies, $E = \pm\sqrt{p^2c^2 + m^2c^4}$.
@@ -210,6 +217,8 @@ annihilate within a tiny fraction of a second. Weyl showed in the same
 period that the theory's symmetry forces the hole to have the electron's
 mass. @dirac1931 accepted both points and predicted the anti-electron,
 which @anderson1933 found in cosmic rays.
+
+*Textbooks:* @tong2006qft [§5.3], @tongpp [§2.1.3] and @shankar1994 [§20.3]. @tongpp explains why the Dirac sea, though it led to the right prediction, is the wrong picture.
 
 ## Deuterons and the Coulomb barrier
 
@@ -224,6 +233,8 @@ energies below this barrier. The deuteron is large and loosely bound
 to be captured while the proton flies off. This (d, p) reaction is the
 Oppenheimer–Phillips process.
 
+*Textbooks:* @landau1977qm [§50, Problem 2] derive the tunnelling factor through a Coulomb barrier, first found by Gamow. @krane1988 [§8.4] uses it for alpha decay, and covers the deuteron in §4.1 and stripping reactions in §11.11.
+
 ## Lawrence's cyclotron
 
 A charge $q$ in a field $B$ circles at the cyclotron frequency, which does
@@ -234,6 +245,8 @@ $$
 so a fixed-frequency oscillator can kick it twice per turn as it spirals
 out to the magnet's radius $R$ [@lawrence1932]. The same magnets later
 became the calutrons of @sec-materials.
+
+*Textbooks:* @landau1975fields [§21], @tong2013dynrel [§2.4.2] and @krane1988 [§15.2].
 
 # Stars, 1938–1939: neutron cores and collapse {#sec-stars}
 
@@ -341,6 +354,8 @@ because nuclear forces stiffen the equation of state well beyond a free
 Fermi gas. The qualitative result stands: above some mass, no cold star can
 support itself.
 
+*Textbooks:* @landau1975fields [§100] set up the field equations inside matter, from which the TOV equation follows; @landau1980stat [§§106–109] cover dense matter and the neutron-star limit; @carroll2004 [§5.8] derives the TOV equation. For the Newtonian version of the degeneracy argument, see the white dwarfs and the Chandrasekhar limit in @tongstat [§3.6.5].
+
 ## Oppenheimer–Snyder collapse
 
 @oppenheimer1939snyder took the simplest case, a uniform ball of
@@ -377,6 +392,8 @@ detection. Oppenheimer and Snyder put it as the star tending "to close
 itself off from any communication with a distant observer". Landau and
 Lifshitz work through the same solution in modern coordinates
 [@landau1975fields, §§102–103].
+
+*Textbooks:* besides @landau1975fields [§§102–103], @tong2019gr [§§6.1.2–6.1.5] covers the horizon, the coordinates that cross it, and the formation of black holes by collapse, and @carroll2004 [§§5.6–5.8] does the same.
 
 ## Why nobody followed it up
 
@@ -480,12 +497,16 @@ neutron itself needs about a MeV of kinetic energy. Uranium-238 is 99.3%
 of natural uranium, and this is why the film's Bohr tells Oppenheimer the
 whole country would have to become a factory.
 
+*Textbooks:* @krane1988 covers binding energies and the semi-empirical mass formula (§3.3), the liquid-drop barrier (§13.1) and the energy released (§13.3).
+
 ## Secondary neutrons
 
 The blackboard step in the film, from fission to a bomb, needs fission to
 release more neutrons than it absorbs. Three groups measured this within
 weeks in spring 1939 [@halban1939; @anderson1939; @szilard1939] and found
 two to three per fission.
+
+*Textbooks:* @krane1988 [§13.2], which also covers delayed neutrons.
 
 # Chain reactions and critical mass {#sec-critical}
 
@@ -578,6 +599,8 @@ in April 1943. It adds the tamper, a heavy shell that reflects neutrons
 back and holds the core together a little longer, and the efficiency
 problem: the core blows itself apart after a few generations at most.
 
+*Textbooks:* @krane1988 [§13.9] on fission explosives, alongside @reed2021.
+
 # Making the material: the marbles {#sec-materials}
 
 The scene where Oppenheimer drops marbles into bowls, one for each month's
@@ -648,6 +671,8 @@ where $\ell_{\text{eff}}$ is the mean neutron lifetime including the delayed
 ones, about a tenth of a second. Prompt neutrons alone, with lifetimes of a
 millisecond in graphite, would give periods too short for any control rod.
 
+*Textbooks:* @krane1988 [§§13.5–13.6], which builds the multiplication factor of a pile like Fermi's from the four-factor formula.
+
 # Igniting the atmosphere {#sec-ignition}
 
 The film's tensest physics is Teller's worry that the bomb's heat could
@@ -684,6 +709,8 @@ The history is thinner than the film suggests. Teller raised the idea at
 Oppenheimer's Berkeley summer study in 1942 and Bethe dismissed it within
 days [@rhodes1986; @griffith2023]. Oppenheimer discussed it with Compton,
 not Einstein [@politifact2023].
+
+*Textbooks:* the Coulomb-barrier tunnelling factor is in @landau1977qm [§50, Problem 2], and @krane1988 [§§14.1–14.2] applies it to fusion rates.
 
 # Plutonium and implosion
 
@@ -792,6 +819,8 @@ secret when he published, and the official figure today is about 21
 kilotons. Rabi's guess of 18 kilotons, which won the film's betting pool,
 was closer than either estimate.
 
+@landau1987fluid [§106] derive the full self-similar solution, which gives $S(\gamma)$. They credit it to Sedov (1946) and von Neumann (1947), and note that Taylor's treatment, written in 1941 and published in 1950, stopped short of an analytic solution.
+
 # The Super
 
 The last act turns on the hydrogen bomb. The reaction that matters is
@@ -817,6 +846,8 @@ film keeps this part of the story to politics. The General Advisory
 Committee report of October 1949, which Oppenheimer
 chaired and which opposed a crash programme, is the document behind the
 security hearing scenes; @bird2005 and @wellerstein2021 cover it.
+
+*Textbooks:* @krane1988 [§14.5].
 
 # Scene index
 
@@ -847,6 +878,12 @@ secrecy and what it did to the literature, @wellerstein2021. For the
 astrophysics, @oppenheimer1939snyder is five pages and readable today,
 @ortega2017 explains its neglect, and @landau1975fields [§§102–103] and
 @landau1980stat [§109] give the textbook treatment.
+
+Most sections end with textbook references. Landau and Lifshitz are the
+classic treatment. David Tong's Cambridge lecture notes are free online, so
+every reader can follow those. @shankar1994 and @carroll2004 are the
+standard modern texts for quantum mechanics and general relativity, and
+@krane1988 for the nuclear physics.
 
 # References {.unnumbered}
 
