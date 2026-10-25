@@ -218,7 +218,7 @@ period that the theory's symmetry forces the hole to have the electron's
 mass. @dirac1931 accepted both points and predicted the anti-electron,
 which @anderson1933 found in cosmic rays.
 
-*Textbooks:* @tong2006qft [§5.3], @tongpp [§2.1.3] and @shankar1994 [§20.3]. @tongpp explains why the Dirac sea, though it led to the right prediction, is the wrong picture.
+*Textbooks:* @tong2006qft [§5.3], @tongpp [§2.1.3] and @shankar1994 [§20.3]. @tongpp explains why the Dirac sea, though it led to the right prediction, is the wrong picture. @berestetskii1982 treat antiparticles without the sea [§11] and give Dirac's equation [§§20–21]. The annihilation behind Oppenheimer's argument is worked out there as two-photon annihilation of an electron pair [@berestetskii1982, §88].
 
 ## Deuterons and the Coulomb barrier
 
@@ -632,6 +632,8 @@ $\sqrt\alpha$, so going from 0.72% to 90% takes about
 `{python} f"{round(stages, -2):,.0f}"` stages. That is why the K-25 plant at Oak Ridge
 was one of the largest buildings in the world.
 
+*Textbooks:* @lifshitz1981 [§15] derive the flow of a rarefied gas through a small hole: the mass leaving per unit time is $Q = sP\sqrt{m/2\pi T}$ (temperature in energy units), so the number of molecules goes as $1/\sqrt m$, which is Graham's law.
+
 ## Calutrons
 
 Lawrence's alternative was a mass spectrometer on an industrial scale. An
@@ -710,7 +712,7 @@ Oppenheimer's Berkeley summer study in 1942 and Bethe dismissed it within
 days [@rhodes1986; @griffith2023]. Oppenheimer discussed it with Compton,
 not Einstein [@politifact2023].
 
-*Textbooks:* the Coulomb-barrier tunnelling factor is in @landau1977qm [§50, Problem 2], and @krane1988 [§§14.1–14.2] applies it to fusion rates.
+*Textbooks:* the Coulomb-barrier tunnelling factor is in @landau1977qm [§50, Problem 2], and @krane1988 [§§14.1–14.2] applies it to fusion rates. The losses LA-602 weighed against it are bremsstrahlung from electrons scattering off nuclei and Compton scattering, both in @berestetskii1982 [§92 and §86].
 
 # Plutonium and implosion
 
